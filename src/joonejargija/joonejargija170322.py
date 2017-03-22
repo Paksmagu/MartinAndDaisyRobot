@@ -41,21 +41,21 @@ class Robot:
 
 def main():
 	try: 
-		while(not btn.any())
-		robot = Robot()
+		while(not btn.any()):
+			robot = Robot()
 
-		robot.drive()
-		time.sleep(2)
+			robot.drive()
+			time.sleep(2)
 
-		robot.turn("right")
-		time.sleep(2)
+			robot.turn("right")
+			time.sleep(2)
 
-		robot.drive()
-		time.sleep(2)
+			robot.drive()
+			time.sleep(2)
 
-		robot.turn_fast("left")
+			robot.turn_fast("left")
 
-		robot.stop()
+			robot.stop()
 	except KeyboardInterrupt:
 		robot.stop()
 
