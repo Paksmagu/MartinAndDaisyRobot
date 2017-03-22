@@ -26,6 +26,14 @@ class Robot:
 			self.motor_left.stop()
 			self.motor_right.run_forever(speed_sp = self.speed)
 
+	def turn_fast(self, direction):
+		if direction == "right":
+			self.motor_right.run_forever(speed_sp = self.speed)
+			self.motor_left.run_forever(speed_sp = self.speed)
+		elif direction == "left":
+			self.motor_left.run_forever(speed_sp = self.speed)
+			self.motor_right.run_forever(speed_sp = self.speed)
+
 	def stop(self):
 		self.motor_left.stop()
 		self.motor_right.stop()
@@ -36,13 +44,15 @@ def main():
 		robot = Robot()
 
 		robot.drive()
-		time.sleep(10)
+		time.sleep(2)
 
 		robot.turn("right")
-		time.sleep(10)
+		time.sleep(2)
 
-		robot.turn("left")
-		time.sleep(10)
+		robot.drive()
+		time.sleep(2)
+
+		robot.turn_fast("left")
 
 		robot.stop()
 	except KeyboardInterrupt:
@@ -50,4 +60,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
