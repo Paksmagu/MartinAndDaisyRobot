@@ -41,7 +41,8 @@ class Robot:
 
 def main():
     try:
-        while(not btn.any()):
+        btn = ev3.Button
+        while not btn.any:
             robot = Robot()
 
             robot.drive()
