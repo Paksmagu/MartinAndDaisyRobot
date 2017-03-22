@@ -26,8 +26,8 @@ class Robot:
         self.motor_right.duty_cycle_sp = 15
 
     def drive(self):
-        self.motor_left.run_forever()
-        self.motor_right.run_forever()
+        self.motor_left.run_forever(speed_sp=200)
+        self.motor_right.run_forever(speed_sp=200)
 
     def turn(self, direction):
         if direction == "Right":

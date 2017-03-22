@@ -72,7 +72,6 @@ def main():
     u.mode = "US-DIST-CM"
     while True:
         print(u.value())
-
     return
 
     robot.set_robot_speed(15)

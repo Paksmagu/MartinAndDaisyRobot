@@ -70,14 +70,11 @@ def main():
 
     u = ev3.UltrasonicSensor("in3")
     u.mode = "US-DIST-CM"
-    while True:
-        print(u.value())
-    
-    return
 
     robot.set_robot_speed(15)
-    
+
     for _ in range(7):
+        print(u.value())
         robot.drive()
         
         while robot.sense_color() != 1:   

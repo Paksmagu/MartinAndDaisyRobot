@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 """
 - k2ib m00da musta joont, kui satub valge peale siis 
