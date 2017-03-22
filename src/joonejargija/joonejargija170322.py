@@ -4,7 +4,7 @@
 """
 
 from ev3dev import ev3
-from time import sleep
+import time
 
 class Robot:
 	def __init__(self):
@@ -36,13 +36,13 @@ def main():
 		robot = Robot()
 
 		robot.drive()
-		time.sleep(4000)
+		time.sleep(10)
 
 		robot.turn("right")
-		time.sleep(4000)
+		time.sleep(10)
 
 		robot.turn("left")
-		time.sleep(4000)
+		time.sleep(10)
 
 		robot.stop()
 	except KeyboardInterrupt:
