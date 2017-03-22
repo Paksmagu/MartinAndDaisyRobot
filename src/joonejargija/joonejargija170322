@@ -33,15 +33,22 @@ class Robot:
 
 
 def main():
-	robot = Robot()
+	try: 
+		robot = Robot()
 
-	robot.drive()
-	time.sleep(4000)
+		robot.drive()
+		time.sleep(4000)
 
-	robot.turn("right")
-	time.sleep(4000)
+		robot.turn("right")
+		time.sleep(4000)
 
-	robot.turn("left")
-	time.sleep(4000)
+		robot.turn("left")
+		time.sleep(4000)
 
-	robot.stop()
+		robot.stop()
+	except KeyboardInterrupt:
+		robot.stop()
+
+if __name__ == "__main__":
+	main()
+
