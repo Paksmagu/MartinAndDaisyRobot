@@ -17,15 +17,16 @@ class Robot:
         self.color_sensor.mode = "COL-REFLECT"  # 0-100
 
     def drive(self):
-        self.motor_left.run_forever(speed_sp=self.speed * 3)
+        self.motor_left.run_forever(speed_sp=self.speed * 4)
+        self.motor_right.run_forever(speed_sp=self.speed * 4)
 
     def turn(self, direction):
         if direction == "right":
             self.motor_right.stop()
-            self.motor_left.run_forever(speed_sp=self.speed * 2)
+            self.motor_left.run_forever(speed_sp=self.speed * 4)
         elif direction == "left":
             self.motor_left.stop()
-            self.motor_right.run_forever(speed_sp=self.speed * 2)
+            self.motor_right.run_forever(speed_sp=self.speed * 4)
 
     def turn_fast(self, direction):
         if direction == "right":
