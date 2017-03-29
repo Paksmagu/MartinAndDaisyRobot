@@ -54,16 +54,16 @@ def isOnTrack(reflections, last_turn):
     last = reflections[0]
     current = reflections[1]
 
-    if (last == current):
-        if (current > 45):
-            if (last_turn = "right"):
+    if last == current:
+        if current > 45:
+            if last_turn == "right":
                 return -1
-            elif (last_turn = "left"):
+            elif last_turn == "left":
                 return 2
         return 0
-    elif (last - current > 0):
+    elif last - current > 0:
         return 1
-    elif (last - current < 0):
+    elif last - current < 0:
         return -1
 
 def main():
@@ -71,8 +71,8 @@ def main():
     last_turn = "right"
 
     reflections = []
-            for x in range(0, 2):
-                reflections.extend(robot.sense_reflection())
+    for x in range(0, 2):
+        reflections.extend(robot.sense_reflection())
 
     try:
         while not robot.btn.any():
@@ -83,16 +83,16 @@ def main():
             # hoiab 2 iteratsiooni v22rtused (kustutab hilisema)
             reflections.pop(0)
 
-            if (isOnTrack(reflections, last_turn) == 0):
+            if isOnTrack(reflections, last_turn) == 0:
                 robot.drive()
-            elif (isOnTrack(reflections, last_turn) == 1):
+            elif isOnTrack(reflections, last_turn) == 1:
                 last_turn = "right"
                 robot.turn_fast("right")
-            elif (isOnTrack(reflections, last_turn) == -1):
+            elif isOnTrack(reflections, last_turn) == -1:
                 last_turn = "left"
                 robot.turn_fast("left")
-            elif (isOnTrack(reflections, last_turn) == 2):
-                last_turn("right")
+            elif isOnTrack(reflections, last_turn) == 2:
+                last_turn = "right"
                 robot.turn("right")
 
 
