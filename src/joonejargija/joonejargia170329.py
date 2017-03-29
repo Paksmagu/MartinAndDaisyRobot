@@ -5,7 +5,6 @@
 """
 
 from ev3dev import ev3
-import time
 
 
 class Robot:
@@ -18,8 +17,7 @@ class Robot:
         self.color_sensor.mode = "COL-REFLECT"  # 0-100
 
     def drive(self):
-        self.motor_left.run_forever(speed_sp=self.speed)
-        self.motor_right.run_forever(speed_sp=self.speed)
+        self.motor_left.run_forever(speed_sp=self.speed * 3)
 
     def turn(self, direction):
         if direction == "right":
@@ -44,6 +42,7 @@ class Robot:
     def sense_reflection(self):
         return self.color_sensor.value()
 
+
 def isOnTrack(reflections, last_turn):
     # reflections on list, kus 2 elementi
     # 0 - straight (last - current = 0)
@@ -53,7 +52,6 @@ def isOnTrack(reflections, last_turn):
     # -2 - fast left
     last = reflections[0]
     current = reflections[1]
-
     if 15 < current < 35:
         if last == current:
             if current > 30:
@@ -71,14 +69,13 @@ def isOnTrack(reflections, last_turn):
     elif current >= 35:
         return -1
 
+
 def main():
     robot = Robot()
     last_turn = "right"
-
     reflections = []
     for x in range(2):
         reflections.append(robot.sense_reflection())
-
     try:
         while not robot.btn.any():
             print(str(reflections[0]) + " : " + str(reflections[1]))
@@ -100,8 +97,6 @@ def main():
             elif isOnTrack(reflections, last_turn) == 2:
                 last_turn = "right"
                 robot.turn("right")
-
-
         robot.stop()
     except KeyboardInterrupt:
         robot.stop()
