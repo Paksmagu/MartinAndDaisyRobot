@@ -14,11 +14,11 @@ class Robot:
         self.motor_left = ev3.LargeMotor('outB')
         self.motor_right = ev3.LargeMotor('outC')
         self.color_sensor = ev3.ColorSensor('in2')
-        self.color_sensor.mode = "COL-REFLECT"  # 0-100
+        self.color_sensor.mode = "COL-COLOR"  # 0-100
 
     def drive(self):
-        self.motor_left.run_forever(speed_sp=self.speed * 3)
-        self.motor_right.run_forever(speed_sp=self.speed * 3)
+        self.motor_left.run_forever(speed_sp=self.speed * 4)
+        self.motor_right.run_forever(speed_sp=self.speed * 4)
 
     def turn(self, direction):
         if direction == "right":
@@ -73,31 +73,9 @@ def isOnTrack(reflections, last_turn):
 
 def main():
     robot = Robot()
-    last_turn = "right"
-    reflections = []
-    for x in range(2):
-        reflections.append(robot.sense_reflection())
     try:
         while not robot.btn.any():
-            print(str(reflections[0]) + " : " + str(reflections[1]))
-            robot.drive()
-            # lisab 3 iteratsiooni väärtused
-            reflections.append(robot.sense_reflection())
-
-            # hoiab 2 iteratsiooni v22rtused (kustutab hilisema)
-            reflections.pop(0)
-
-            if isOnTrack(reflections, last_turn) == 0:
-                robot.drive()
-            elif isOnTrack(reflections, last_turn) == 1:
-                last_turn = "right"
-                robot.turn_fast("right")
-            elif isOnTrack(reflections, last_turn) == -1:
-                last_turn = "left"
-                robot.turn_fast("left")
-            elif isOnTrack(reflections, last_turn) == 2:
-                last_turn = "right"
-                robot.turn("right")
+            print(robot.color_sensor.value())
         robot.stop()
     except KeyboardInterrupt:
         robot.stop()
