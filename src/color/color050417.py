@@ -17,30 +17,30 @@ class Robot:
         self.color_sensor.mode = "COL-COLOR"  # 0-100
 
     def drive(self):
-        self.motor_left.run_forever(speed_sp=self.speed * 4)
-        self.motor_right.run_forever(speed_sp=self.speed * 4)
+        self.motor_left.run_forever(speed_sp=self.speed * 2)
+        self.motor_right.run_forever(speed_sp=self.speed * 2)
 
     def turn(self, direction):
         if direction == "right":
             self.motor_right.stop()
-            self.motor_left.run_forever(speed_sp=self.speed * 4)
+            self.motor_left.run_forever(speed_sp=self.speed * 3)
         elif direction == "left":
             self.motor_left.stop()
-            self.motor_right.run_forever(speed_sp=self.speed * 4)
+            self.motor_right.run_forever(speed_sp=self.speed * 3)
 
     def turn_fast(self, direction):
         if direction == "right":
-            self.motor_right.run_forever(speed_sp=-self.speed)
-            self.motor_left.run_forever(speed_sp=self.speed)
+            self.motor_right.run_forever(speed_sp=-self.speed * 2)
+            self.motor_left.run_forever(speed_sp=self.speed * 2)
         elif direction == "left":
-            self.motor_left.run_forever(speed_sp=-self.speed)
-            self.motor_right.run_forever(speed_sp=self.speed)
+            self.motor_left.run_forever(speed_sp=-self.speed * 2)
+            self.motor_right.run_forever(speed_sp=self.speed * 2)
 
     def stop(self):
         self.motor_left.stop()
         self.motor_right.stop()
 
-    def sense_reflection(self):
+    def get_color_sensor_value(self):
         return self.color_sensor.value()
 
 
@@ -53,7 +53,7 @@ def isOnTrack(reflections, last_turn):
     # -2 - fast left
     last = reflections[0]
     current = reflections[1]
-    if 15 < current < 35:
+    if 10 < current < 25:
         if last == current:
             if current > 30:
                 if last_turn == "right":
@@ -73,9 +73,45 @@ def isOnTrack(reflections, last_turn):
 
 def main():
     robot = Robot()
+    last_turn = "right"
+    reflections = []
+    colors = []
+    correct_colors = []
+    robot.color_sensor.mode = "COL-REFLECT"
+    for x in range(2):
+        reflections.append(robot.get_color_sensor_value())
+    robot.color_sensor.mode = "COL-COLOR"
+    for x in range(2):
+        colors.append(robot.get_color_sensor_value())
+    robot.color_sensor.mode = "COL-REFLECT"
     try:
         while not robot.btn.any():
-            print(robot.color_sensor.value())
+            # print(str(reflections[0]) + " : " + str(reflections[1]))
+            # print(str(colors[0]) + " : " + str(colors[1]))
+            robot.drive()
+            # lisab 3 iteratsiooni väärtused
+            robot.color_sensor.mode = "COL-REFLECT"
+            reflections.append(robot.get_color_sensor_value())
+            # hoiab 2 iteratsiooni v22rtused (kustutab hilisema)
+            reflections.pop(0)
+
+            robot.color_sensor.mode = "COL-COLOR"
+            colors.append(robot.get_color_sensor_value())
+            colors.pop(0)
+            if colors[0] == 3 or colors[1] == 3:
+                break
+
+            if isOnTrack(reflections, last_turn) == 0:
+                robot.drive()
+            elif isOnTrack(reflections, last_turn) == 1:
+                last_turn = "right"
+                robot.turn_fast("right")
+            elif isOnTrack(reflections, last_turn) == -1:
+                last_turn = "left"
+                robot.turn_fast("left")
+            elif isOnTrack(reflections, last_turn) == 2:
+                last_turn = "right"
+                robot.turn("right")
         robot.stop()
     except KeyboardInterrupt:
         robot.stop()
