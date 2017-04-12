@@ -30,11 +30,11 @@ class Robot:
 
     def turn_fast(self, direction):
         if direction == "right":
-            self.motor_right.run_forever(speed_sp=-self.speed * 1.2)
-            self.motor_left.run_forever(speed_sp=self.speed * 1.2)
+            self.motor_right.run_forever(speed_sp=-self.speed)
+            self.motor_left.run_forever(speed_sp=self.speed)
         elif direction == "left":
-            self.motor_left.run_forever(speed_sp=-self.speed * 1.2)
-            self.motor_right.run_forever(speed_sp=self.speed * 1.2)
+            self.motor_left.run_forever(speed_sp=-self.speed)
+            self.motor_right.run_forever(speed_sp=self.speed)
 
     def stop(self):
         self.motor_left.stop()
