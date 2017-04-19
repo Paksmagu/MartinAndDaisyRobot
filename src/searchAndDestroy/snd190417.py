@@ -1,9 +1,8 @@
-"""
-- soidab mustast joonest paremal
-- valge > 70
-- must < 11
-"""
-import time
+# TODO: Võta alguse ja lõpu gyro väärtused ja siis selle keskmine
+# TODO: Maatrix solution?
+# TODO:
+
+
 from ev3dev import ev3
 
 
@@ -11,6 +10,7 @@ class Robot:
     def __init__(self):
         self.speed = 25
         self.btn = ev3.Button()
+        self.sound = ev3.Sound()
         self.gyro = ev3.GyroSensor('in1')
         self.gyro.mode = 'GYRO-ANG'
         self.sonar = ev3.UltrasonicSensor('in4')
@@ -47,14 +47,42 @@ class Robot:
     def sense_reflection(self):
         return self.color_sensor.value()
 
+    def gyro_value(self):
+        return self.gyro.value() % 360
+
+    def sonar_value(self):
+        return self.sonar.value() / 10
+
 
 def main():
     robot = Robot()
+    sonar_values = []
+    working = True
+    min_dist = 3000
+    min_deg = 361
+    first_turn = True
+    for x in range(2):
+        sonar_values.append(robot.sonar.value())
     try:
-        while not robot.btn.any():
-            print("SONAR: " + str(robot.sonar.value() / 10))
-            print("GYRO: " + str(robot.gyro.value() % 360))
-            robot.turn_fast("right")
+        while not robot.btn.any() and working:
+            if first_turn:
+                robot.turn_fast("right")
+                new_sonar_value = robot.sonar.value()
+                sonar_values.append(new_sonar_value)
+                sonar_values.pop(0)
+                print("Dist: "+str(min_dist) + " Deg: " + str(min_deg))
+                # print("Gyro: " + str(robot.gyro_value()) + " Sonar: " + str(robot.sonar_value()))
+                if min_dist > new_sonar_value:
+                    min_dist = sonar_values[1]
+                    min_deg = robot.gyro_value()
+                    print("Gyro: " + str(robot.gyro_value()) + " Sonar: " + str(robot.sonar_value()))
+                if robot.gyro_value() == 180:
+                    first_turn = False
+            else:
+                if robot.gyro_value() != min_deg:
+                    robot.turn_fast("left")
+                if robot.gyro_value() == min_deg:
+                    robot.stop()
         robot.stop()
     except KeyboardInterrupt:
         robot.stop()
