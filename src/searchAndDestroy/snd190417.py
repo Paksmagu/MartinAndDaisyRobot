@@ -70,7 +70,7 @@ def main():
                 new_sonar_value = robot.sonar.value()
                 sonar_values.append(new_sonar_value)
                 sonar_values.pop(0)
-                print("Dist: "+str(min_dist) + " Deg: " + str(min_deg))
+                print("Dist: " + str(min_dist) + " Deg: " + str(min_deg))
                 # print("Gyro: " + str(robot.gyro_value()) + " Sonar: " + str(robot.sonar_value()))
                 if min_dist > new_sonar_value:
                     min_dist = sonar_values[1]
