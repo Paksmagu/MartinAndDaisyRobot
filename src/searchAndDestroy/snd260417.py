@@ -1,6 +1,7 @@
 # TODO: Võta alguse ja lõpu gyro väärtused ja siis selle keskmine
 # TODO: Maatrix solution?
-# TODO:
+# TODO: DAISY FIX GETTING CLOSER!!!!
+# TODO
 
 
 from ev3dev import ev3
@@ -8,7 +9,7 @@ from ev3dev import ev3
 
 class Robot:
     def __init__(self):
-        self.speed = 25
+        self.speed = 50
         self.btn = ev3.Button()
         self.sound = ev3.Sound()
         self.gyro = ev3.GyroSensor('in1')
@@ -21,8 +22,8 @@ class Robot:
         self.color_sensor.mode = "COL-REFLECT"  # 0-100
 
     def drive(self):
-        self.motor_left.run_forever(speed_sp=-self.speed)
-        self.motor_right.run_forever(speed_sp=-self.speed)
+        self.motor_left.run_forever(speed_sp=self.speed)
+        self.motor_right.run_forever(speed_sp=self.speed)
 
     def turn(self, direction):
         if direction == "right":
@@ -59,8 +60,13 @@ def main():
     sonar_values = []
     working = True
     min_dist = 3000
-    min_deg = 361
+    first_deg = 361
+    second_deg = 361
     first_turn = True
+    first_found = False
+    drive_values = []
+    test = True
+    right_turn = True
     for x in range(2):
         sonar_values.append(robot.sonar.value())
     try:
@@ -70,21 +76,32 @@ def main():
                 new_sonar_value = robot.sonar.value()
                 sonar_values.append(new_sonar_value)
                 sonar_values.pop(0)
-                print("Gyro: " + str(robot.gyro_value()) + " Sonar: " + str(robot.sonar_value()))
                 if min_dist > new_sonar_value:
                     min_dist = sonar_values[1]
-                    min_deg = robot.gyro_value()
-                    # print("Gyro: " + str(robot.gyro_value()) + " Sonar: " + str(robot.sonar_value()))
+                    first_deg = robot.gyro_value()
                 if robot.gyro_value() == 180:
                     first_turn = False
-            else:
-                if robot.gyro_value() != min_deg:
+            elif not first_turn and not first_found:
+                if robot.gyro_value() == first_deg:
+                    robot.stop()
+                    drive_values.append(min_dist)
+                    first_found = True
+                elif robot.gyro_value() != first_deg:
                     robot.turn_fast("left")
-                if robot.gyro_value() == min_deg:
+            else:
+                if robot.sonar_value() > 4 and test:
+                    drive_values.append(robot.sonar.value())
+                    if drive_values[0] - drive_values[1] > 100:
+                        while robot.sonar.value() > drive_values[0] or robot.sonar.value() > drive_values[1]:
+                            robot.turn("right")
+                    drive_values.pop(0)
+                    print("Gyro: " + str(robot.gyro_value()) + " Sonar: " + str(robot.sonar_value()))
+                    robot.drive()
+                else:
                     robot.stop()
         robot.stop()
     except KeyboardInterrupt:
-        print("Min deg: " + str(min_deg) + " Min dist: " + str(min_dist))
+        print("First deg: " + str(first_deg) + " Second deg: " + str(second_deg) + " Min dist: " + str(min_dist))
         robot.stop()
 
 
