@@ -1,4 +1,5 @@
 from ev3dev import ev3
+from time import *
 
 
 class Robot:
@@ -51,51 +52,31 @@ class Robot:
 
 def main():
     robot = Robot()
-    sonar_values = []
-    working = True
-    min_dist = 3000
-    first_deg = 361
-    second_deg = 361
-    first_turn = True
-    first_found = False
-    drive_values = []
-    test = True
-    right_turn = True
-    for x in range(2):
-        sonar_values.append(robot.sonar.value())
+    shortest = 10000
+    shortest_gyro = 0
+    print("Sonar: " + str(robot.sonar_value()) + " Gyro: " + str(robot.gyro_value()))
+    robot.turn_fast("right")
     try:
-        while not robot.btn.any() and working:
-            if first_turn:
+        while not robot.btn.any():
+            if robot.gyro.value() < 360:
+                sleep(0.5)
+                robot.stop()
+                print("Sonar: " + str(robot.sonar_value()) + " Gyro: " + str(robot.gyro_value()))
+                if robot.sonar.value() < shortest:
+                    shortest = robot.sonar.value()
+                    shortest_gyro = robot.gyro_value()
+                sleep(0.5)
                 robot.turn_fast("right")
-                new_sonar_value = robot.sonar.value()
-                sonar_values.append(new_sonar_value)
-                sonar_values.pop(0)
-                if min_dist > new_sonar_value:
-                    min_dist = sonar_values[1]
-                    first_deg = robot.gyro_value()
-                if robot.gyro_value() == 180:
-                    first_turn = False
-            elif not first_turn and not first_found:
-                if robot.gyro_value() == first_deg:
-                    robot.stop()
-                    drive_values.append(min_dist)
-                    first_found = True
-                elif robot.gyro_value() != first_deg:
-                    robot.turn_fast("left")
             else:
-                if robot.sonar_value() > 4 and test:
-                    drive_values.append(robot.sonar.value())
-                    if drive_values[0] - drive_values[1] > 100:
-                        while robot.sonar.value() > drive_values[0] or robot.sonar.value() > drive_values[1]:
-                            robot.turn("right")
-                    drive_values.pop(0)
-                    print("Gyro: " + str(robot.gyro_value()) + " Sonar: " + str(robot.sonar_value()))
-                    robot.drive()
-                else:
+                if robot.gyro_value() == shortest_gyro:
+                    print("FOUND THIS PEICE OF SHIT")
                     robot.stop()
+                else:
+                    robot.turn_fast("right")
+                    print("Sonar: " + str(robot.sonar_value()) + " Gyro: " + str(robot.gyro_value()))
         robot.stop()
     except KeyboardInterrupt:
-        print("First deg: " + str(first_deg) + " Second deg: " + str(second_deg) + " Min dist: " + str(min_dist))
+        print("gyro true value: " + str(robot.gyro.value()))
         robot.stop()
 
 
