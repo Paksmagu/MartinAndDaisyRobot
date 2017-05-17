@@ -1,6 +1,4 @@
 from ev3dev import ev3
-from time import *
-
 
 class Robot:
     def __init__(self):
@@ -66,11 +64,10 @@ def main():
         for j in range(0, 16):
             if i == 0 or i == 15:
                 matrix[i][j] = 1
-            else if j == 0 or j == 15:
+            elif j == 0 or j == 15:
                 matrix[i][j] = 1
             else: 
                 continue
-
 
     # platsil ainult 3 silindrit, robot stardib platsi keskelt
     # teeb täistiiru ja jätab 3 kõige lähemat sonari valuet ja 
@@ -111,10 +108,6 @@ def main():
                 # 3. pöörata veelkord tagasi ümber, et oleks sellises suunas
                 #    kust alustas just käidud silindri juurde sõitmist, et keskmist 
                 #    spinni tegeva gyro muutuja value oleks õigesti pagas
-
-
-
-
     except KeyboardInterrupt:
         print("gyro true value: " + str(robot.gyro.value()))
         robot.stop()
